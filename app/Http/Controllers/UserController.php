@@ -19,9 +19,10 @@ class UserController extends Controller
         $this->userRepository = $userRepository;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $users = $this->userRepository->all();
+        $perPage = $request->input('per_page',15);
+        $users = $this->userRepository->all($perPage);
         return response()->json($users);
     }
 
@@ -60,7 +61,6 @@ class UserController extends Controller
 
     }
 
-
     public function destroy(string $id)
     {
         $user = User::findOrFail($id);
@@ -69,6 +69,15 @@ class UserController extends Controller
 
     }
 
+    public function filterAndSortUsers(Request $request)
+    {
+        $filters = $request->only(['country', 'currency', 'sort', 'direction']);
+        $filteredUsers = $this->userRepository->filter($filters);
+        return response()->json($filteredUsers);
+
+    }
+
+    // گرفتن لیست کشورها از API
     public function getCountries(CountryService $countryService)
     {
         $countries = $countryService->getCountries();

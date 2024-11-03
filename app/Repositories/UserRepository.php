@@ -7,9 +7,10 @@ use App\Models\User;
 class UserRepository implements UserRepositoryInterface
 {
 
-    public function all()
+    public function all($perPage)
     {
-        return User::all();
+        return User::paginate($perPage);
+        // return User::all();
     }
 
     public function find($id)
@@ -36,7 +37,26 @@ class UserRepository implements UserRepositoryInterface
         return true;
     }
 
+    public function filter(array $filters)
+    {
+        $query = User::query();
 
+        if(isset($filters['country'])){
+            $query->where('country', $filters['country']);
+        }
+
+        if (isset($filters['currency'])) {
+            $query->where('currency', $filters['currency']);
+        }
+
+        if(isset($filters['sort']))
+        {
+            $direction = $filters['direction'] ?? 'asc';
+            $query->orderBy($filters['sort'], $direction);
+        }
+
+        return $query->get();
+    }
 
 
 }
