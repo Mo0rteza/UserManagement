@@ -13,11 +13,20 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // برای ایجاد داده فیک با استفاده از فکتوری و فیکر از این کد استفاده شود
         // User::factory(10)->create();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        // User::factory()->create([
+        //     'name' => fake()->name(),
+        //     'email' => fake()->unique()->safeEmail(),
+        //     'country' => fake()->country(),
+        //     'currency' => fake()->currencyCode()
+        // ]);
+
+        // برای ایجاد داده به صورت دستی از سیدر یوزر استفاده شود
+        $this->call([
+            UserSeeder::class
         ]);
+
     }
 }
