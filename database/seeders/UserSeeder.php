@@ -43,6 +43,22 @@ class UserSeeder extends Seeder
                 'created_at' => now()
 
             ],
+            [
+                'name' => 'احمد پور مخبر',
+                'email' => 'ahmad.pm@gmail.com',
+                'country' => 'Iran',
+                'currency' => 'IRR',
+                'created_at' => now()
+
+            ],
+            [
+                'name' => 'حمید لولایی',
+                'email' => 'lolaei.hamid@gmail.com',
+                'country' => 'Canada',
+                'currency' => 'CAD',
+                'created_at' => now()
+
+            ],
         ]);
     }
 }
