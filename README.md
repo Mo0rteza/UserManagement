@@ -1,66 +1,76 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+## پروژه مدیریت کاربران
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+برای کار با پروژه ابتدا باید فایل migrate را اجرا کنید، با دستور زیر
+```
+php artisan migrate
+```
+سپس با دستور زیر تعدادی داده که به صورت دستی در UserSeeder نوشته شده است در جدول کاربران اضافه می شود.
+```
+php artisan db:seed --class=UserSeeder
+```
 
-## About Laravel
+ یا با اجرای دستور زیر10 تا رکورد به صورت رندوم  توسط factory ایجاد می شود.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+```
+php artisan db:seed
+```
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+با استفاده از الگوی ریپازیتوری ، کار با دیتابیس و جدول کاربران به عهده UserRepository.php می باشد که در پوشه `Repositories` در مسیر `/app/http/Repositories` قرار دارد. و UserController وظیفه کنترل درخواست ها و پاسخ ها را به عهده دارد.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+برای جداسازی منطق بیزنس برای کاربران، میتوانست  برای آن سرویسی در نظر گرفت ولی چون پروژه کوچک بود از این کار چشم پوشی کردم.
 
-## Learning Laravel
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+برای کار با API یک سرویس در نظر گرفته شد در پوشه Services  در مسیر `/app/http/Services` به نام CountryService. در این فایل درخواست  به API ارسال می شود و لیست کشورها و ارز ها گرفته می شود.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+روت ها در فایل api.php در پوشه routes قرار دارد.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Endpoints  
 
-## Laravel Sponsors
+```
+GET /api/users => گرفت لیست کاربران
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+POST /api/users => ایجاد یک کاربر
 
-### Premium Partners
+header:
+accept = application/json
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+payload:
+name= مرتضی حسینی
+email= h.morteza011@gmail.com
+country= Iran
+currency= IRR
 
-## Contributing
+PUT /api/users/{id}  آپدیت اطلاعات کاربر
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+payload:
+name= مرتضی حسینی
+email= h.morteza011@gmail.com
+country= United States
+currency= USD
 
-## Code of Conduct
+DELETE /api/users/{id} حذف یک کاربر
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
 
-## Security Vulnerabilities
+GET /api/countries  گرفتن لیست کشورها
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+GET /api/users/filter?country=Iran  فیلتر کاربران بر اساس کشور
 
-## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+GET /api/users/filter?currency=USD فیلتر کاربران بر اساس ارز
+
+GET /api/users/filter?country=Iran&currency=IRR فیلتر کاربران بر اساس کشور و ارز
+
+GET /api/users/filter?sort=name&direction=asc  مرتب سازی کاربران براساس نام و به صورت صعودی
+
+sort = name || email || country || currency
+
+direction = asc || desc
+
+GET /api/users/filter?country=Iran&currency=IRR&sort=name&direction=desc  فیلتر کاربران براساس کشور و ارز و مرتب سازی بر اساس نام به صورت نزولی
+
+```
+
+با دستور زیر میتوان تست را اجرا کرد. تست ها در فایل UserRepositoryTest نوشته شده اند که در مسیر `/tests/Unit` می توانید آن را مشاهده کنید.
+```
+php artisan test --filter=UserRepositoryTest
+```
